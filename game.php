@@ -139,6 +139,43 @@ function move()
     echo json_encode($data);
 }
 
+function shoot()
+{
+    $map = getMap();
+    $target = null;
+
+    if (strpos($map, '3')) {
+        $target = strpos($map, '3');
+    } elseif (strpos($map, "4")) {
+        $target = strpos($map, '4');
+    } elseif (strpos($map, '5')) {
+        $target = strpos($map, '5');
+    }
+
+    if (($target % 21) + 1 == $_REQUEST['x'] && floor($target / 21) == $_REQUEST['y']) {
+        $data = [
+            "result" => 'touch'
+        ];
+        if ($map[$target] === '3') {
+            $map[$target] = '4';
+        } elseif ($map[$target] === '4') {
+            $map[$target] = '5';
+        } elseif ($map[$target] === '5') {
+            $data = [
+                "result" => 'kill'
+            ];
+            $map[$target] = '6';
+        }
+        save($map);
+    } else {
+        $data = [
+            "result" => 'miss'
+        ];
+    }
+
+    echo json_encode($data);
+}
+
 $request = $_SERVER['REQUEST_URI'];
 
 switch ($request) {
