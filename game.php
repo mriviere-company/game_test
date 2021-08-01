@@ -176,6 +176,49 @@ function shoot()
     echo json_encode($data);
 }
 
+function map()
+{
+    $x = 0;
+    $y = 0;
+    $i = 0;
+    $return = null;
+    $map = getMap();
+    $position = strpos($map, '2');
+
+    if (strpos($map, '6')) {
+        echo 'Congratulations you win! You can restart /start';
+        exit;
+    }
+
+    while ($y != MAPY) {
+        while ($x != MAPX) {
+            if ($map[$i] === '1')
+                $return .= "<span style='padding:5px'>0</span>";
+            if ($map[$i] === '2')
+                $return .= "<span style='color:#008000;padding:2px'>M</span>";
+            if ($map[$i] >= 3) {
+                if (
+                    ($position - $i <= 2 && $position - $i >= -2)
+                    || in_array($position - $i, CLOSETARGET)
+                ) {
+                    $return .= "<span style='color:#FF0000;padding:4px'>T</span>";
+                } else {
+                    $return .= "<span style='padding:5px'>0</span>";
+                }
+            }
+
+            $x++;
+            $i++;
+        }
+
+        $return .= "<br>";
+        $y++;
+        $x = 0;
+    }
+
+    echo $return;
+}
+
 $request = $_SERVER['REQUEST_URI'];
 
 switch ($request) {
