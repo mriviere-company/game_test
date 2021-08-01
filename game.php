@@ -6,12 +6,25 @@ const CIPHER = "AES-256-CBC";
 const LOGFILE = "save.log";
 const MAPX = 21;
 const MAPY = 21;
+const CLOSETARGET = [
+    MAPX, MAPX + 1, MAPX + 2, MAPX - 1, MAPX - 2,
+    MAPX * 2,(MAPX * 2) - 2, (MAPX * 2) - 1, (MAPX * 2) + 1, (MAPX * 2) + 2,
+    -MAPX, -MAPX - 1, -MAPX - 2, -MAPX + 1, -MAPX + 2,
+    -MAPX * 2, (-MAPX * 2) - 2, (-MAPX * 2) - 1, (-MAPX * 2) + 1, (-MAPX * 2) + 2
+];
 
 function save($map)
 {
     fclose(fopen(LOGFILE,'w'));
     $mapEncrypt = openssl_encrypt($map, CIPHER, KEY, 0, IV);
     file_put_contents(LOGFILE, $mapEncrypt, FILE_APPEND);
+}
+
+function getMap()
+{
+    $mapEncrypt = file_get_contents(LOGFILE, false);
+
+    return openssl_decrypt($mapEncrypt, CIPHER, KEY, 0, IV);
 }
 
 function initialize()
@@ -44,6 +57,86 @@ function initialize()
     }
 
     save($map);
+}
+
+function move()
+{
+    $map = getMap();
+    $position = strpos($map, '2');
+    $target = null;
+    if (strpos($map, '3')) {
+        $target = strpos($map, '3');
+    } elseif (strpos($map, "4")) {
+        $target = strpos($map, '4');
+    } elseif (strpos($map, '5')) {
+        $target = strpos($map, '5');
+    }
+
+    if ($_REQUEST['action'] === 'up') {
+        if (
+            $map[$position - MAPX] === '1'
+            && $position - MAPX >= 0
+            && $position - MAPX <= MAPX * MAPY
+        ) {
+            $map[$position] = '1';
+            $map[$position - MAPX] = '2';
+        }
+    } else if ($_REQUEST['action'] === 'down') {
+        if (
+            $map[$position + MAPX] === '1'
+            && $position + MAPX >= 0
+            && $position + MAPX <= MAPX * MAPY
+        ) {
+            $map[$position] = '1';
+            $map[$position + MAPX] = '2';
+        }
+    } else if ($_REQUEST['action'] === 'right') {
+        if (
+            $map[$position + 1] === '1'
+            && ($position + 1) % 21 != 0
+            && $position + MAPX <= MAPX * MAPY
+        ) {
+            $map[$position] = '1';
+            $map[$position + 1] = '2';
+        }
+    } else if ($_REQUEST['action'] === 'left') {
+        if (
+            $map[$position - 1] === '1'
+            && $position - 1 >= 0
+            && $position % 21 != 0
+        ) {
+            $map[$position] = '1';
+            $map[$position - 1] = '2';
+        }
+    }
+
+    save($map);
+    $position = strpos($map, '2');
+    if (
+        ($position - $target <= 2 && $position - $target >= -2)
+        || in_array($position - $target, CLOSETARGET)
+    ) {
+        $data = [
+            "position" => [
+                "x" => ($position % 21) + 1,
+                "y" => floor(($position / 21))
+            ],
+            "target" => [
+                "x" => ($target % 21) + 1,
+                "y" => floor(($target / 21))
+            ]
+        ];
+    } else {
+        $data = [
+            "position" => [
+                "x" => ($position % 21) + 1,
+                "y" => floor(($position / 21))
+            ],
+            "target" => null
+        ];
+    }
+
+    echo json_encode($data);
 }
 
 $request = $_SERVER['REQUEST_URI'];
