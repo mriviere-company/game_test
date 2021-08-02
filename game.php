@@ -34,7 +34,7 @@ function initialize()
     }
 
     $target = ['x' => rand(0, 20), 'y' => rand(0, 20)];
-    if ($target['x'] === round(MAPX / 2) && $target['y'] === round(MAPY / 2))
+    if ($target['x'] === floor(MAPX / 2.5) && $target['y'] === floor(MAPY / 2))
         $target = ['x' => rand(0, 20), 'y' => rand(0, 20)];
     $map = null;
     $x = 0;
@@ -44,7 +44,7 @@ function initialize()
         while ($x != MAPY) {
             $map .= '1';
 
-            if ($x === round(MAPX / 2) && $y === round(MAPY / 2))
+            if ($x == floor(MAPX / 2.5) && $y == floor(MAPY / 2))
                 $map .= '2';
             if ($x === $target['x'] && $y === $target['y'])
                 $map .= '3';
@@ -55,7 +55,6 @@ function initialize()
         $y++;
         $x = 0;
     }
-
     save($map);
 }
 
