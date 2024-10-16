@@ -1,9 +1,14 @@
-For launch the game please go in terminal and launch the server with "php -S localhost:8000 game.php".
+For launch the game please go in terminal and launch the server with "php -S localhost:8000 game.php"
 
-For start the game go to : http://localhost:8000/start .
+# You can play here : http://localhost:8000
 
-If you want to move go to : http://localhost:8000/move&action= and add up|down|left|right.
+# Point of the game :
+Move yourself on the map (M) and find the target (T), then shoot the target 3 times to win
 
-You can shoot the target at : http://localhost:8000/shoot&x=VALUEX?y=VALUEY change VALUEX and VALUeY with yours.
+# Here are all routes :
 
-Finaly you can see the map here : http://localhost:8000/map .
+Restart game : http://localhost:8000/restart
+
+Move : http://localhost:8000/move?action= and add up|down|left|right
+
+Shoot : http://localhost:8000/shoot?x=VALUEX&y=VALUEY change VALUEX and VALUeY with yours
