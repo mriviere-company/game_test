@@ -12,3 +12,7 @@ Restart game : http://localhost:8000/restart
 Move : http://localhost:8000/move?action= and add up|down|left|right
 
 Shoot : http://localhost:8000/shoot?x=VALUEX&y=VALUEY change VALUEX and VALUeY with yours
+
+
+# Game in prod :
+https://map.areauniverse.fr
